@@ -25,10 +25,21 @@ function App() {
         }
     }
 
+    const findTaskById = (id) => {
+        return allTasks.findIndex((item) => item.id === id)
+    }
+
     const deleteItem = (id) => {
-        const index = allTasks.findIndex((item) => item.id === id)
+        const index = findTaskById(id)
         const newTaskData = allTasks.toSpliced(index, 1)
         setTask(newTaskData)
+    }
+
+    const onToggleDone = (id) => {
+        const index = findTaskById(id)
+        const oldTask = allTasks[index]
+        const doneTask = {...oldTask, isDone: !oldTask.isDone}
+        setTask(allTasks.toSpliced(index, 1, doneTask))
     }
 
     return (
@@ -37,6 +48,7 @@ function App() {
             <section className='main'>
                 <TaskList data={ allTasks }
                           onDelete={ deleteItem }
+                          onDone={ onToggleDone }
                 />
                 <Footer/>
             </section>
