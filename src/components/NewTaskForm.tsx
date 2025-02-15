@@ -1,26 +1,21 @@
 import { useState } from 'react'
 
-export default function NewTaskForm ({ onItemAdded }) {
+function NewTaskForm ({ onItemAdded }) {
+
     const [text, setText] = useState('')
     const [taskMin, setMin] = useState('')
     const [taskSec, setSec] = useState('')
 
-    const onTextChange = (e) => {
-        setText(e.target.value)
-    }
+    const onTextChange = (e) => setText(e.target.value)
 
     const onMinChange = (e) => {
         const value = e.target.value;
-        if(Number(value) <= 999 && /^\d{0,3}$/.test(value)) {
-            setMin(value)
-        }
+        if (Number(value) <= 999 && /^\d{0,3}$/.test(value)) setMin(value)
     }
 
     const onSecChange = (e) => {
         const value = e.target.value
-        if(Number(value) <= 59 && /^\d{0,2}$/.test(value)) {
-            setSec(value)
-        }
+        if (Number(value) <= 59 && /^\d{0,2}$/.test(value)) setSec(value)
     }
 
     const onSubmit = (e) => {
@@ -51,15 +46,4 @@ export default function NewTaskForm ({ onItemAdded }) {
     )
 }
 
-
-
-// const onSubmitTask = (e) => {
-//     e.preventDefault()
-//     const { taskText, taskMin, taskSec } = this.state;
-//     const totalSeconds = Number(taskMin) * 60 + Number(taskSec)
-//     this.props.onItemAdded(taskText, totalSeconds)
-//
-//     this.setState({
-//         taskText: '',
-//     })
-// }
+export default NewTaskForm

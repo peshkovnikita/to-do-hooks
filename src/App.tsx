@@ -6,6 +6,7 @@ import Footer from './components/Footer'
 function App() {
 
     const [allTasks, setTask] = useState([])
+    const [filterState, setFilter] = useState('all')
 
     const createTask = (description, seconds) => {
         return {
@@ -25,9 +26,7 @@ function App() {
         }
     }
 
-    const findTaskById = (id) => {
-        return allTasks.findIndex((item) => item.id === id)
-    }
+    const findTaskById = (id) => allTasks.findIndex((item) => item.id === id)
 
     const deleteItem = (id) => {
         const index = findTaskById(id)
@@ -42,16 +41,52 @@ function App() {
         setTask(allTasks.toSpliced(index, 1, doneTask))
     }
 
+    const onToggleEditing = (id) => {
+        const index = findTaskById(id)
+        const taskForEditing = allTasks[index]
+        const edited = {...taskForEditing, isEditing: !taskForEditing.isEditing}
+        setTask(allTasks.toSpliced(index, 1, edited))
+    }
+
+    const onUpdate = (id, text) => {
+        const index = findTaskById(id)
+        const editedTask = allTasks[index]
+        const updatedTask = { ...editedTask, description: text }
+        setTask(allTasks.toSpliced(index, 1, updatedTask))
+    }
+
+    const clearAllCompleted = () => {
+        const uncompletedTasks = allTasks.filter(item => item.isDone === false)
+        setTask(uncompletedTasks)
+    }
+
+    const onToggleFilter = (filterState) => {
+        setFilter(filterState)
+    }
+
+    const activeTasks = allTasks.filter((el) => !el.isDone)
+    const completedTasks = allTasks.filter((el) => el.isDone)
+    const tasksLeft = allTasks.length - completedTasks.length
+
     return (
         <section className='todoapp'>
             <NewTaskForm onItemAdded={addItem} />
-            <section className='main'>
-                <TaskList data={ allTasks }
-                          onDelete={ deleteItem }
-                          onDone={ onToggleDone }
+            <main className='main'>
+                <TaskList
+                    data={ filterState === 'all' ? allTasks : filterState === 'active' ? activeTasks : completedTasks }
+                    onDelete={ deleteItem }
+                    onDone={ onToggleDone }
+                    onToggleEditing={ onToggleEditing }
+                    onUpdate={ onUpdate }
                 />
-                <Footer/>
-            </section>
+                <Footer
+                    data={ allTasks }
+                    tasksLeft={ tasksLeft }
+                    onClearAllCompleted={ clearAllCompleted }
+                    onToggleFilter={ onToggleFilter }
+                    filterState={ filterState }
+                />
+            </main>
         </section>
     )
 }

@@ -1,11 +1,14 @@
 import Task from './Task'
 
-export default function TaskList({ data, onDelete, onDone }) {
+function TaskList({ data, onDelete, onDone, onToggleEditing, onUpdate }) {
+
     const tasks = data.map(taskData => <Task
         {...taskData}
         key={taskData.id}
         onDelete={() => onDelete(taskData.id)}
         onDone={() => onDone(taskData.id)}
+        onToggleEditing={() => onToggleEditing(taskData.id)}
+        onUpdate={onUpdate}
     />)
 
     return (
@@ -14,3 +17,5 @@ export default function TaskList({ data, onDelete, onDone }) {
         </ul>
     )
 }
+
+export default TaskList
