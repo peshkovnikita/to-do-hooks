@@ -1,22 +1,36 @@
-import {useEffect, useState, useRef} from 'react'
+import { useEffect, useState, useRef } from 'react'
+import { ChangeEvent, FormEvent } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 
-function Task({ id, description, seconds, isEditing, isDone, creationTime, onDelete, onDone, makeEditable, onUpdate }) {
+type TaskProps = {
+    id: number
+    description: string
+    seconds: number
+    isEditing: boolean
+    isDone: boolean
+    creationTime: number
+    onDelete: () => void
+    onDone: () => void
+    makeEditable: () => void
+    onUpdate: (id: number, text: string) => void
+}
 
-    const [time, setTime] = useState(seconds)
-    const [isRunning, setRun] = useState(false)
-    const [taskText, setTaskText] = useState(description)
-    const intervalRef = useRef(0)
+function Task ({ id, description, seconds, isEditing, isDone, creationTime, onDelete, onDone, makeEditable, onUpdate }: TaskProps) {
+
+    const [time, setTime] = useState<number>(seconds)
+    const [isRunning, setRun] = useState<boolean>(false)
+    const [taskText, setTaskText] = useState<string>(description)
+    const intervalRef = useRef<number>(0)
 
     const min = Math.floor(time / 60)
-    const sec = time - min * 60 === 0 ? 0 : time - min * 60
+    const sec = time % 60
 
     let stateStyle = `${isEditing ? 'editing' :  isDone ? 'completed' : ''}`
     const doneStyle = isDone ? {color: '#cdcdcd', cursor: 'initial'} : {}
 
-    const onTaskChange = (e) => setTaskText(e.target.value)
+    const onTaskChange = (e: ChangeEvent<HTMLInputElement>) => setTaskText(e.target.value)
 
-    const onSubmit = (e) => {
+    const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (taskText.trim()) {
             onUpdate(id, taskText)
@@ -52,13 +66,7 @@ function Task({ id, description, seconds, isEditing, isDone, creationTime, onDel
         }
     }
 
-    useEffect(() => {
-        return () => clearInterval(intervalRef.current)
-    }, [])
-
-    const editInput = <form action='' onSubmit={ onSubmit }>
-                          <input type='text' className='edit' value={ taskText } onChange={ onTaskChange } autoFocus />
-                      </form>
+    useEffect(() => () => clearInterval(intervalRef.current), [])
 
     return (
         <li className={stateStyle}>
@@ -81,7 +89,11 @@ function Task({ id, description, seconds, isEditing, isDone, creationTime, onDel
                     <button type='button' className='icon icon-play' onClick={ startTimer } style={doneStyle} disabled={isDone}/>
                 }
             </div>
-            { isEditing ? editInput : null}
+            { isEditing && (
+                <form action='' onSubmit={ onSubmit }>
+                    <input type='text' className='edit' value={ taskText } onChange={ onTaskChange } autoFocus />
+                </form>
+            )}
         </li>
     )
 }

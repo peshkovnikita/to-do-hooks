@@ -3,12 +3,23 @@ import NewTaskForm from './components/NewTaskForm.tsx'
 import TaskList from './components/TaskList'
 import Footer from './components/Footer'
 
+export type TaskType = {
+    id: number
+    description: string
+    seconds: number
+    isEditing: boolean
+    isDone: boolean
+    creationTime: number
+}
+
+type FilterState = 'all' | 'active' | 'completed'
+
 function App() {
 
-    const [allTasks, setTask] = useState([])
-    const [filterState, setFilter] = useState('all')
+    const [allTasks, setTask] = useState<TaskType[]>([])
+    const [filterState, setFilter] = useState<FilterState>('all')
 
-    const createTask = (description, seconds) => {
+    const createTask = (description: string, seconds: number): TaskType => {
         return {
             description,
             seconds,
@@ -19,35 +30,35 @@ function App() {
         }
     }
 
-    const addItem = (text, seconds) => {
+    const addItem = (text: string, seconds: number) => {
         if(text.trim()) {
             const newTask = createTask(text, seconds)
             setTask([...allTasks, newTask])
         }
     }
 
-    const findTaskById = (id) => allTasks.findIndex((item) => item.id === id)
+    const findTaskById = (id: number): number => allTasks.findIndex((item) => item.id === id)
 
-    const deleteItem = (id) => {
+    const deleteItem = (id: number) => {
         const index = findTaskById(id)
         const newTaskData = allTasks.toSpliced(index, 1)
         setTask(newTaskData)
     }
 
-    const onToggleDone = (id) => {
+    const onToggleDone = (id: number) => {
         const index = findTaskById(id)
         const oldTask = allTasks[index]
         const doneTask = {...oldTask, isDone: !oldTask.isDone}
         setTask(allTasks.toSpliced(index, 1, doneTask))
     }
 
-    const makeEditable = (id) => {
+    const makeEditable = (id: number) => {
         setTask(allTasks.map(task =>
             task.id === id ? { ...task, isEditing: true } : task
         ))
     }
 
-    const onUpdate = (id, text) => {
+    const onUpdate = (id: number, text: string) => {
         const index = findTaskById(id)
         const taskForUpdate = allTasks[index]
         const edited = {
@@ -59,11 +70,11 @@ function App() {
     }
 
     const clearAllCompleted = () => {
-        const uncompletedTasks = allTasks.filter(item => item.isDone === false)
+        const uncompletedTasks = allTasks.filter(item => !item.isDone)
         setTask(uncompletedTasks)
     }
 
-    const onToggleFilter = (filterState) => setFilter(filterState)
+    const onToggleFilter = (filterState: FilterState) => setFilter(filterState)
 
     const activeTasks = allTasks.filter((el) => !el.isDone)
     const completedTasks = allTasks.filter((el) => el.isDone)

@@ -1,30 +1,36 @@
-import { useState } from "react";
+import { useState, MouseEvent } from "react";
 
-function TasksFilter({ filterState, onToggleFilter }) {
+type FilterState = 'all' | 'active' | 'completed'
 
-    const [filter, setFilter] = useState(filterState)
+type TasksFilterProps = {
+    filterState: FilterState
+    onToggleFilter: (filterState: FilterState) => void
+}
 
-    const onChangeFilter = (e) => {
-        const filterState = e.target.getAttribute('value')
-        onToggleFilter(filterState)
+function TasksFilter({ filterState, onToggleFilter }: TasksFilterProps) {
 
-        setFilter(filterState)
+    const [filter, setFilter] = useState<FilterState>(filterState)
+
+    const onChangeFilter = (e: MouseEvent<HTMLButtonElement>) => {
+        const newFilter = e.currentTarget.value as FilterState
+        onToggleFilter(newFilter)
+        setFilter(newFilter)
     }
 
     return (
         <ul className='filters'>
             <li>
-                <button type='button' value='all' onClick={ onChangeFilter } className={filter === 'all' ? 'selected' : {}}>
+                <button type='button' value='all' onClick={ onChangeFilter } className={filter === 'all' ? 'selected' : ''}>
                     All
                 </button>
             </li>
             <li>
-                <button type='button' value='active' onClick={ onChangeFilter } className={filter === 'active' ? 'selected' : {}}>
+                <button type='button' value='active' onClick={ onChangeFilter } className={filter === 'active' ? 'selected' : ''}>
                     Active
                 </button>
             </li>
             <li>
-                <button type='button' value='completed' onClick={ onChangeFilter } className={ filter === 'completed' ? 'selected' : {} }>
+                <button type='button' value='completed' onClick={ onChangeFilter } className={ filter === 'completed' ? 'selected' : '' }>
                     Completed
                 </button>
             </li>

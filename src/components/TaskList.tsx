@@ -1,6 +1,23 @@
 import Task from './Task'
 
-function TaskList({ data, onDelete, onDone, makeEditable, onUpdate }) {
+type TaskType = {
+    id: number
+    description: string
+    seconds: number
+    isEditing: boolean
+    isDone: boolean
+    creationTime: number
+}
+
+type TaskListProps = {
+    data: TaskType[]
+    onDelete: (id: number) => void
+    onDone: (id: number) => void
+    makeEditable: (id: number) => void
+    onUpdate: (id: number, text: string) => void
+}
+
+function TaskList({ data, onDelete, onDone, makeEditable, onUpdate }: TaskListProps) {
 
     const tasks = data.map(taskData => <Task
         { ...taskData }

@@ -1,30 +1,37 @@
 import { useState } from 'react'
+import { ChangeEvent, FormEvent } from 'react'
 
-function NewTaskForm ({ onItemAdded }) {
+type Props = {
+    onItemAdded: (text: string, seconds: number) => void
+}
 
-    const [text, setText] = useState('')
-    const [taskMin, setMin] = useState('')
-    const [taskSec, setSec] = useState('')
+function NewTaskForm ({ onItemAdded }: Props) {
 
-    const onTextChange = (e) => setText(e.target.value)
+    const [text, setText] = useState<string>('')
+    const [taskMin, setMin] = useState<string>('')
+    const [taskSec, setSec] = useState<string>('')
 
-    const onMinChange = (e) => {
+    const onTextChange = (e: ChangeEvent<HTMLInputElement>) => setText(e.target.value)
+
+    const onMinChange = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         if (Number(value) <= 999 && /^\d{0,3}$/.test(value)) setMin(value)
     }
 
-    const onSecChange = (e) => {
+    const onSecChange = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
         if (Number(value) <= 59 && /^\d{0,2}$/.test(value)) setSec(value)
     }
 
-    const onSubmit = (e) => {
+    const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const totalSeconds = Number(taskMin) * 60 + Number(taskSec)
-        onItemAdded(text, totalSeconds)
-        setText('')
-        setMin('')
-        setSec('')
+        if(text.trim() && totalSeconds > 0) {
+            onItemAdded(text, totalSeconds)
+            setText('')
+            setMin('')
+            setSec('')
+        }
     }
 
     return (
