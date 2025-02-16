@@ -44,6 +44,14 @@ function Task({ id, description, seconds, isEditing, isDone, creationTime, onDel
         setRun(false)
     }
 
+    const onTaskDone = () => {
+        onDone()
+        if(isRunning) {
+            clearInterval(intervalRef.current)
+            setRun(false)
+        }
+    }
+
     useEffect(() => {
         return () => clearInterval(intervalRef.current)
     }, [])
@@ -55,7 +63,7 @@ function Task({ id, description, seconds, isEditing, isDone, creationTime, onDel
     return (
         <li className={stateStyle}>
             <div className='view'>
-                <input className='toggle' type='checkbox' onClick={ onDone } defaultChecked={ isDone } />
+                <input className='toggle' type='checkbox' onClick={ onTaskDone } defaultChecked={ isDone } />
                 <label>
                     <span className='description'>{description}</span>
                     <span className='timer' style={doneStyle}>
