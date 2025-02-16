@@ -42,17 +42,20 @@ function App() {
     }
 
     const onToggleEditing = (id) => {
-        const index = findTaskById(id)
-        const taskForEditing = allTasks[index]
-        const edited = {...taskForEditing, isEditing: !taskForEditing.isEditing}
-        setTask(allTasks.toSpliced(index, 1, edited))
+        setTask(allTasks.map(task =>
+            task.id === id ? { ...task, isEditing: true } : task
+        ))
     }
 
     const onUpdate = (id, text) => {
         const index = findTaskById(id)
-        const editedTask = allTasks[index]
-        const updatedTask = { ...editedTask, description: text }
-        setTask(allTasks.toSpliced(index, 1, updatedTask))
+        const taskForUpdate = allTasks[index]
+        const edited = {
+            ...taskForUpdate,
+            isEditing: false,
+            description: text,
+        }
+        setTask(allTasks.toSpliced(index, 1, edited))
     }
 
     const clearAllCompleted = () => {
@@ -60,9 +63,7 @@ function App() {
         setTask(uncompletedTasks)
     }
 
-    const onToggleFilter = (filterState) => {
-        setFilter(filterState)
-    }
+    const onToggleFilter = (filterState) => setFilter(filterState)
 
     const activeTasks = allTasks.filter((el) => !el.isDone)
     const completedTasks = allTasks.filter((el) => el.isDone)

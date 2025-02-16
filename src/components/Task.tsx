@@ -1,5 +1,5 @@
+import { useState } from 'react'
 import { formatDistanceToNow } from 'date-fns'
-import { useState } from "react";
 
 function Task({ id, description, seconds, isEditing, isDone, creationTime, onDelete, onDone, onToggleEditing, onUpdate }) {
 
@@ -11,18 +11,17 @@ function Task({ id, description, seconds, isEditing, isDone, creationTime, onDel
 
     let stateStyle = `${isEditing ? 'editing' :  isDone ? 'completed' : ''}`
     const doneStyle = isDone ? {color: '#cdcdcd'} : {}
-    
-    const onTaskChange = (e) => setTaskText(e.target.value)
 
-    const onEditing = () => !isDone ? onToggleEditing() : void 0
+    const onTaskChange = (e) => setTaskText(e.target.value)
 
     const onSubmit = (e) => {
         e.preventDefault()
-        if(taskText.trim()) {
-            onUpdate(id, taskText)
-            onToggleEditing()
-        }
+        onUpdate(id, taskText)
     }
+
+    const editInput = <form action='' onSubmit={ onSubmit }>
+                        <input type='text' className='edit' value={ taskText } onChange={ onTaskChange } autoFocus />
+                    </form>
 
     return (
         <li className={stateStyle}>
@@ -38,14 +37,10 @@ function Task({ id, description, seconds, isEditing, isDone, creationTime, onDel
                         addSuffix: true,
                     })}</span>
                 </label>
-                <button type='button' className='icon icon-edit' onClick={ onEditing } />
+                <button type='button' className='icon icon-edit' onClick={ onToggleEditing } style={ doneStyle } disabled={ isDone } />
                 <button type='button' className='icon icon-destroy' onClick={ onDelete } />
             </div>
-            { isEditing ?
-                <form action='' onSubmit={onSubmit}>
-                    <input type='text' className='edit' value={taskText} onChange={onTaskChange} autoFocus />
-                </form>
-                : null }
+            { isEditing ? editInput : null}
         </li>
     )
 }
