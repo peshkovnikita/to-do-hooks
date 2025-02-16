@@ -41,7 +41,7 @@ function App() {
         setTask(allTasks.toSpliced(index, 1, doneTask))
     }
 
-    const onToggleEditing = (id) => {
+    const makeEditable = (id) => {
         setTask(allTasks.map(task =>
             task.id === id ? { ...task, isEditing: true } : task
         ))
@@ -77,7 +77,7 @@ function App() {
                     data={ filterState === 'all' ? allTasks : filterState === 'active' ? activeTasks : completedTasks }
                     onDelete={ deleteItem }
                     onDone={ onToggleDone }
-                    onToggleEditing={ onToggleEditing }
+                    makeEditable={ makeEditable }
                     onUpdate={ onUpdate }
                 />
                 <Footer
